@@ -14,8 +14,8 @@ public abstract class BaseActivity<T extends Viewable>
     @Override
     protected void onStart() {
         super.onStart();
-        view=initView();
-        presenter=initPresenter();
+        view = initView();
+        presenter = initPresenter();
         presenter.onAttach(view);
     }
 }
