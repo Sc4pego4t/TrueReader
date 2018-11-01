@@ -1,4 +1,4 @@
-package ru.scapegoats.truereader.activities;
+package ru.scapegoats.truereader.activities.main;
 
 import ru.scapegoats.truereader.modules.Presenter;
 

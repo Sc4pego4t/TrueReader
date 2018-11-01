@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">True Reader</string>
+    <string name="fileBrowser">Browse files</string>
 </resources>

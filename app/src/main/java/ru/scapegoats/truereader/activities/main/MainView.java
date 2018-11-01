@@ -1,4 +1,4 @@
-package ru.scapegoats.truereader.activities;
+package ru.scapegoats.truereader.activities.main;
 
 import android.content.Context;
 import android.view.View;

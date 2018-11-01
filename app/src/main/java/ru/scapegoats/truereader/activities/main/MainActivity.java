@@ -1,9 +1,14 @@
-package ru.scapegoats.truereader.activities;
+package ru.scapegoats.truereader.activities.main;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import androidx.annotation.Nullable;
 
 import ru.scapegoats.truereader.R;
+import ru.scapegoats.truereader.activities.filebrowser.FileBrowserActivity;
 import ru.scapegoats.truereader.modules.BaseActivity;
 import ru.scapegoats.truereader.modules.Presenter;
 import ru.scapegoats.truereader.modules.Viewable;
@@ -28,5 +33,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected Presenter initPresenter() {
         return new MainPresenter();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu( Menu menu ) {
+        getMenuInflater().inflate(R.menu.navigation_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.fileBrowser: startActivity(
+                    new Intent(this, FileBrowserActivity.class));
+
+        }
+        return true;
     }
 }

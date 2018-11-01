@@ -1,12 +1,19 @@
 package ru.scapegoats.truereader.modules;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import ru.scapegoats.truereader.R;
+import ru.scapegoats.truereader.activities.filebrowser.FileBrowserActivity;
 
 public abstract class BaseActivity<T extends Viewable>
         extends AppCompatActivity {
 
-    T view;
-    Presenter<T> presenter;
+    protected T view;
+    protected Presenter<T> presenter;
 
     protected abstract T initView();
     protected abstract Presenter<T> initPresenter();
@@ -17,5 +24,8 @@ public abstract class BaseActivity<T extends Viewable>
         view=initView();
         presenter=initPresenter();
         presenter.onAttach(view);
+
     }
+
+
 }
