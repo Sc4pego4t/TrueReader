@@ -1,5 +1,6 @@
 package ru.scapegoats.truereader.activities.filebrowser;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,9 @@ import java.util.TreeSet;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.scapegoats.truereader.R;
+import ru.scapegoats.truereader.activities.books.BookActivity;
+import ru.scapegoats.truereader.activities.books.BookPresenter;
+import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.BaseActivity;
 
 public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdapter.ViewHolder> {
@@ -64,14 +68,15 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
         File currentFile = fileList.get(position);
         holder.tv.setText(currentFile.getName());
 
-        boolean apprFormat=isReadableFile(currentFile);
+        String format = isReadableFile(currentFile);
         if(currentFile.isDirectory()){
             holder.icon.setImageDrawable(
                     acivity.getResources().getDrawable(R.drawable.ic_folder_black));
         } else if(currentFile.isFile()){
 
 
-            if(apprFormat){
+            //if format is unreadable
+            if(format!=null){
                 holder.icon.setImageDrawable(
                         acivity.getResources().getDrawable(R.drawable.ic_closed_book));
             } else {
@@ -85,28 +90,41 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
             if (currentFile.isDirectory()) {
                 enterInFolder(currentFile);
                 addToPathHistory(currentFile);
-            } else if(apprFormat){
+            } else if(format!=null){
+
+                Book book = new Book(currentFile, Book.FileTypes.valueOf(format.toUpperCase()));
+
+                Intent intent=new Intent(acivity, BookActivity.class);
+
+                intent.putExtra(BookPresenter.BOOK_INFO,book);
+
+                acivity.startActivity(intent);
                 //TODO START READ ACTIVITY
             }
         });
     }
 
     //check is it appropriate file to read
-
-    private boolean isReadableFile(File file){
+    //if format readable return it like a string
+    //else return null
+    private String isReadableFile(File file){
         boolean apprFormat=false;
         String[] ar = file.getName().split(DIVIDER);
-
+        String str=null;
         //is file have extensions
         try {
-            String str=ar[ar.length-1].toLowerCase();
+            str=ar[ar.length-1].toLowerCase();
             //if it's extension that we can read
             if(readableFormats.contains(str))
                 apprFormat=true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return apprFormat;
+        if(apprFormat) {
+            return str;
+        } else{
+            return null;
+        }
     }
 
 

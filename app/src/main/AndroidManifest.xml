@@ -18,5 +18,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.filebrowser.FileBrowserActivity"/>
+        <activity android:name=".activities.books.BookActivity"/>
     </application>
 </manifest>
