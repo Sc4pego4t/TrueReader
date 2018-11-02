@@ -5,20 +5,21 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 
 import java.io.File;
-import java.util.Arrays;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import ru.scapegoats.truereader.activities.filebrowser.adapter.FileBrowserRVAdapter;
 import ru.scapegoats.truereader.modules.Presenter;
 
 public class FileBrowserPresenter implements Presenter<FileBrowserView> {
     String[] permissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
     @Override
     public void onAttach(FileBrowserView view) {
 
@@ -28,16 +29,16 @@ public class FileBrowserPresenter implements Presenter<FileBrowserView> {
                 == PackageManager.PERMISSION_GRANTED) {
 
             readFilesToRecycler(view);
-
-    }
-    //trying to acquire a permission
-    else {
-            ActivityCompat.requestPermissions(view.activity,permissions,0);
+        }
+        //trying to acquire a permission
+        else {
+            ActivityCompat.requestPermissions(view.activity, permissions, 0);
         }
     }
 
     FileBrowserRVAdapter adapter;
-    void readFilesToRecycler(FileBrowserView view){
+
+    void readFilesToRecycler(FileBrowserView view) {
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
 
         adapter = new FileBrowserRVAdapter(

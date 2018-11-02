@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class Book implements Serializable {
 
-    public enum FileTypes implements Serializable{
+    public enum FileTypes implements Serializable {
         FB2, EPUB, PDF, DJVU;
     }
 
@@ -29,11 +29,10 @@ public class Book implements Serializable {
 
     private FileTypes fileType;
 
-    public Book(File file, FileTypes fileType){
+    public Book(File file, FileTypes fileType) {
         this.file = file;
         this.fileType = fileType;
     }
-
 
 
 }

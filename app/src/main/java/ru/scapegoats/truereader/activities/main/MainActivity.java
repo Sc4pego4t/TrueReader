@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
-
 import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.activities.filebrowser.FileBrowserActivity;
 import ru.scapegoats.truereader.modules.BaseActivity;
@@ -27,7 +26,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected Viewable initView() {
-        return new MainView(this,findViewById(android.R.id.content));
+        return new MainView(this, findViewById(android.R.id.content));
     }
 
     @Override
@@ -36,16 +35,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu( Menu menu ) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.navigation_bar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.fileBrowser: startActivity(
-                    new Intent(this, FileBrowserActivity.class));
+        switch (item.getItemId()) {
+            case R.id.fileBrowser:
+                startActivity(
+                        new Intent(this, FileBrowserActivity.class));
 
         }
         return true;
