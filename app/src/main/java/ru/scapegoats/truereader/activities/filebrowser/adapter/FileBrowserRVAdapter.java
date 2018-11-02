@@ -97,8 +97,6 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
 
 
     //sort file by alphabet
-    //TODO fix bug with off/on device
-    //TODO fix bug with change orientation
     private List<File> sortAndReturnList(List<File> list) {
         Set<File> setDirs = new TreeSet<>();
         Set<File> setFiles = new TreeSet<>();
@@ -160,7 +158,6 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
             }
             enterInFolder(currentHistory.get(currentHistory.size() - 1));
         });
-        //TODO CHANGE sizes
     }
 
     public void histBack() {
