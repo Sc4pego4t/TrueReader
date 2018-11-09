@@ -1,32 +1,17 @@
 package ru.scapegoats.truereader.activities.books.booktypes.tools;
 
-import android.content.res.Resources;
 import android.graphics.Point;
-import android.text.Html;
 import android.text.Layout;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.internal.operators.single.SingleUsing;
-import io.reactivex.observers.DisposableObserver;
 import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.activities.books.BookView;
-import ru.scapegoats.truereader.activities.books.booktypes.TextableBooks;
 import ru.scapegoats.truereader.activities.books.viewpager.MyPagerAdapter;
 import ru.scapegoats.truereader.modules.BaseActivity;
 import ru.scapegoats.truereader.utils.Utils;

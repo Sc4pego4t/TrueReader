@@ -1,8 +1,6 @@
 package ru.scapegoats.truereader.activities.books.booktypes;
 
-import android.text.Html;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import ru.scapegoats.truereader.activities.books.viewpager.MyPagerAdapter;
 import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.BaseActivity;
 

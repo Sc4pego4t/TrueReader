@@ -1,11 +1,8 @@
 package ru.scapegoats.truereader.activities.books;
 
-import android.app.ActionBar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 
 import androidx.viewpager.widget.ViewPager;
 import ru.scapegoats.truereader.R;

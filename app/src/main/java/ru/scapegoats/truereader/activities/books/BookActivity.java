@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.modules.BaseActivity;
 import ru.scapegoats.truereader.modules.Presenter;

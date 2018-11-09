@@ -1,8 +1,5 @@
 package ru.scapegoats.truereader.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
@@ -10,11 +7,13 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mohsen Navabi

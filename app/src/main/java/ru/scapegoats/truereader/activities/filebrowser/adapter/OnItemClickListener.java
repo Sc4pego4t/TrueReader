@@ -3,25 +3,12 @@ package ru.scapegoats.truereader.activities.filebrowser.adapter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.View;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
-
-import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.util.Zip4jConstants;
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
-
-
+import java.io.File;
 
 import androidx.core.content.ContextCompat;
 import ru.scapegoats.truereader.activities.books.BookActivity;

@@ -1,16 +1,9 @@
 package ru.scapegoats.truereader.activities.books.viewpager;
 
-import android.view.View;
-import android.widget.Toast;
-
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import ru.scapegoats.truereader.modules.BaseActivity;
 
 public class MyPagerAdapter extends FragmentStatePagerAdapter {

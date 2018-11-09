@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.TypedValue;
 
-import ru.scapegoats.truereader.modules.BaseActivity;
-
 public class Utils {
 
     static public float getActionBarHeight(Context context){

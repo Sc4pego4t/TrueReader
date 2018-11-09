@@ -1,32 +1,11 @@
 package ru.scapegoats.truereader.activities.main;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-
-import com.github.barteksc.pdfviewer.util.ArrayUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import androidx.annotation.Nullable;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.activities.filebrowser.FileBrowserActivity;
 import ru.scapegoats.truereader.modules.BaseActivity;
