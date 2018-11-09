@@ -192,6 +192,7 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
         in.readList(this.pathHistory, File.class.getClassLoader());
     }
 
+    //invoke this function after parse the parcelable
     public void restoreProgress() {
         List<File> temp = new ArrayList<>(pathHistory);
         pathHistory = new ArrayList<>();
@@ -210,11 +211,6 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
 
     public void setActivity(BaseActivity activity) {
         this.activity = activity;
-    }
-
-    public List<File> getPathHistory() {
-        Log.e("P", pathHistory.toString());
-        return null;
     }
 
     public static final Parcelable.Creator<FileBrowserRVAdapter> CREATOR = new Parcelable.Creator<FileBrowserRVAdapter>() {

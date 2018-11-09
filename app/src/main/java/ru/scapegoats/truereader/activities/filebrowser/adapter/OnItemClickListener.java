@@ -3,6 +3,7 @@ package ru.scapegoats.truereader.activities.filebrowser.adapter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.View;
 
 import java.io.BufferedOutputStream;
@@ -11,9 +12,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
+import net.lingala.zip4j.core.ZipFile;
+
+
+
 
 import androidx.core.content.ContextCompat;
 import ru.scapegoats.truereader.activities.books.BookActivity;
@@ -51,55 +59,40 @@ public class OnItemClickListener implements View.OnClickListener {
             if (ContextCompat.checkSelfPermission(adapter.activity,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
+
+                File newDirWhereToExtract = new File(file.getParent()
+                        + File.separator
+                        + getFileNameWithoutExtension(file));
+
+                if (!newDirWhereToExtract.exists()) {
+                    newDirWhereToExtract.mkdir();
+                }
+
+                String source = file.getAbsolutePath();
+                String destination = newDirWhereToExtract.getAbsolutePath();
+                String password = "password";
+
                 try {
-                    ZipFile zip = new ZipFile(file);
-                    Enumeration entries = zip.entries();
-                    ZipEntry entry = (ZipEntry) entries.nextElement();
-                    System.out.println(entry.getName());
-
-                    //create folder where to extract if he doesn't exist
-                    File newDirWhereToExtract = new File(file.getParent()
-                            + File.separator
-                            + getFileNameWithoutExtension(file));
-
-                    if (!newDirWhereToExtract.exists()) {
-                        newDirWhereToExtract.mkdir();
+                    ZipFile zipFile = new ZipFile(source);
+                    if (zipFile.isEncrypted()) {
+                        //TODO ADD DIALOG TO ENCRYPTED FILES
+                        zipFile.setPassword(password);
                     }
-
-                    //if extracted file is directory
-                    // then extract all inner files and folder
-                    if (entry.isDirectory()) {
-                        new File(newDirWhereToExtract, entry.getName()).mkdirs();
-                    } else {
-                        //if it's file then just copy it in our new folder
-                        write(zip.getInputStream(entry),
-                                new BufferedOutputStream(new FileOutputStream(
-                                        new File(newDirWhereToExtract, entry.getName()))));
-                    }
-
-                    adapter.enterInFolder(newDirWhereToExtract);
-
-                } catch (IOException e) {
+                    zipFile.extractAll(destination);
+                } catch (ZipException e) {
                     e.printStackTrace();
                 }
+                adapter.addToPathHistory(newDirWhereToExtract);
+                adapter.enterInFolder(newDirWhereToExtract);
             }
         }
-    }
-
-    //
-    private static void write(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int len;
-        while ((len = in.read(buffer)) >= 0)
-            out.write(buffer, 0, len);
-        out.close();
-        in.close();
     }
 
     private String getFileNameWithoutExtension(File file) {
         String[] splitedName = file.getName().split(FileBrowserRVAdapter.DIVIDER);
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < splitedName.length - 2; i++) {
+
+        for (int i = 0; i < splitedName.length - 1; i++) {
             result.append(splitedName[i]);
         }
         return result.toString();

@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-</LinearLayout>
+    <TextView
+        android:textSize="18sp"
+        android:id="@+id/tv"
+        android:text="@string/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/roboto_mono_regular"/>
+    <View
+        android:id="@+id/top"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true" />
+
+    <View
+        android:id="@+id/bottom"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

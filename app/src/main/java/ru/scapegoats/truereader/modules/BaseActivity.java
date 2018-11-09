@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public abstract class BaseActivity<T extends Viewable>
         extends AppCompatActivity {
 
-    protected T view;
+    public T view;
     protected Presenter<T> presenter;
 
     protected abstract T initView();
