@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:id="@+id/layout"
-    android:layout_margin="@dimen/margin"
     android:layout_width="match_parent">
 <androidx.viewpager.widget.ViewPager
     android:orientation="vertical"
@@ -14,18 +13,25 @@
 </androidx.viewpager.widget.ViewPager>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/seekBarBackgroundHeight"
+        android:layout_height="wrap_content"
         android:id="@+id/seekBarBackground"
-        android:background="@drawable/rounded_rectangle"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary"
         android:layout_alignBottom="@id/vPagerReader">
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="34/523"
+            android:layout_marginTop="@dimen/seekBarMargin"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/secondaryText"
+            android:layout_height="wrap_content" />
         <SeekBar
             android:layout_width="match_parent"
             android:id="@+id/seekBar"
-            android:layout_height="wrap_content"
             android:layout_margin="@dimen/seekBarMargin"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
 
 </RelativeLayout>
 

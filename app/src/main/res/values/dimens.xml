@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="pageTextSize">20sp</dimen>
+    <dimen name="secondaryText">15sp</dimen>
     <dimen name="margin">10dp</dimen>
-    <dimen name="seekBarMargin">10dp</dimen>
+    <dimen name="seekBarMargin">4dp</dimen>
     <dimen name="seekBarBackgroundHeight">40dp</dimen>
 </resources>

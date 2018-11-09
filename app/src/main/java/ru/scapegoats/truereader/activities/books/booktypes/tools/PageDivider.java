@@ -20,47 +20,51 @@ public class PageDivider {
 
 
     private int rowsCount;
-    private float rowsMultiplyer=0.75f;
+    private float textSize;
     private BaseActivity activity;
     private String text;
 
     public PageDivider(BaseActivity activity, float textSize, String text){
         this.activity=activity;
         this.text=text;
+        this.textSize=textSize;
         rowsCount=getRowsCount(true,true,true);
-        divideOnPage(textSize,activity);
-
 
     }
 
-    boolean isCreated=false;
+    public void createAdapter(){
+        divideOnPage(textSize,activity);
+    }
+
+    private boolean isCreated=false;
 
     private void createAdapter(List<String> list){
         ((BookView)activity.view).vPagerReader.setAdapter(new MyPagerAdapter(activity,list));
     }
 
-
-    Thread layout;
     private void  divideOnPage(float textSize, BaseActivity activity){
         List<String> pages = new ArrayList<>();
         View view=LayoutInflater.from(activity).inflate(R.layout.page_fragment,null);
+        TextView textView=view.findViewById(R.id.pageText);
         ((BookView)activity.view).layout.addView(view);
-        ((TextView)view).setText(text);
+
+        textView.setText(text);
         view.setVisibility(View.INVISIBLE);
-        //size = ((TextView) view).getLayout().getLineEnd(0);
-         view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+
+        view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
              if(!isCreated) {
                  isCreated=true;
-                 int totalRowsCount = ((TextView) view).getLineCount();
-                 Layout layout=((TextView) view).getLayout();
+                 int totalRowsCount = textView.getLineCount();
+                 view.setVisibility(View.GONE);
+                 Layout layout=textView.getLayout();
                  for (int i = 0; i < totalRowsCount-rowsCount; i+=rowsCount) {
                      int start=layout.getLineStart(i);
                      int end=layout.getLineEnd(i+rowsCount-1);
-                     pages.add(((TextView) view).getText().subSequence(start,end).toString());
+                     pages.add(textView.getText().subSequence(start,end).toString());
                  }
                  createAdapter(pages);
              }
-         });
+        });
     }
 
     private float getDisplayHeight(){
@@ -81,7 +85,8 @@ public class PageDivider {
 
     private float getRowHeight(){
         View view=LayoutInflater.from(activity).inflate(R.layout.page_fragment,null);
-        return ((TextView)view).getLineHeight();
+        TextView textView=view.findViewById(R.id.pageText);
+        return textView.getLineHeight();
     }
 
 

@@ -14,7 +14,7 @@ public class BookView implements Viewable {
     public ViewPager vPagerReader;
     public RelativeLayout layout;
     BookActivity activity;
-    LinearLayout seekBar;
+    private LinearLayout seekBar;
 
     BookView(BookActivity activity, View rootView) {
         this.activity = activity;
@@ -25,7 +25,7 @@ public class BookView implements Viewable {
         //change seek bar bottom margin to display it above navigation bar
         seekBar = rootView.findViewById(R.id.seekBarBackground);
         RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams)seekBar.getLayoutParams();
-        params.bottomMargin = Utils.getNavigationBarSize(activity)+(int) activity.getResources().getDimension(R.dimen.seekBarMargin);
+        params.bottomMargin = Utils.getNavigationBarSize(activity);
         seekBar.setLayoutParams(params);
     }
 

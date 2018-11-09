@@ -63,8 +63,6 @@ public class FB2 extends TextableBooks {
     //read xml in order
     private StringBuilder fileReader = new StringBuilder();
 
-    int counter=0;
-    boolean isBody;
     private void stepThrough (Node start) {
         if(start instanceof Element) {
             String tag = ((Element) start).getTagName();
@@ -75,9 +73,7 @@ public class FB2 extends TextableBooks {
                 getXmlDescription(start);
                 return;
             }
-//            Log.e("tag",tag);
         }
-        counter++;
         if (start.getNodeValue()!= null && !start.getNodeValue().isEmpty()) {
             fileReader.append(start.getNodeValue()).append("\n\t\t\t\t");
         }

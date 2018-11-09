@@ -20,7 +20,7 @@ public abstract class TextableBooks {
 
 
     public void createAdapter() {
-        new PageDivider(activity, textSize, getBookTextContent());
+        new PageDivider(activity, textSize, getBookTextContent()).createAdapter();
     }
     abstract String getBookTextContent();
 
