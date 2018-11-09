@@ -27,7 +27,6 @@ public class MyPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Toast.makeText(activity,position+" / "+pages.size(),Toast.LENGTH_SHORT).show();
         return PageFragment.newInstance(pages.get(position));
     }
 

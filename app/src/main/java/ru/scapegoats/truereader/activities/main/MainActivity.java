@@ -39,83 +39,17 @@ public class MainActivity extends BaseActivity {
     //TODO vlad:pdf
     //TODO vlad:djvu
 
-    TextView tv;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        tv=findViewById(R.id.tv);
-        Display display=getWindowManager().getDefaultDisplay();
-        Point size=new Point();
-        display.getSize(size);
-        Log.e("kk",(size.y-getStatusBarHeight()-getABSize())/tv.getLineHeight()+"");
-        //IMPORTANT TO SET SPACING
-        Log.e("kk",tv.getLineCount()+"");
-
-    }
-
-
-    @Override
-    protected void onResume() {
-
-
-        super.onResume();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Display display=getWindowManager().getDefaultDisplay();
-        Point size=new Point();
-        display.getSize(size);
-        final View top = findViewById(R.id.top);
-        final View bottom = findViewById(R.id.bottom);
-
-        int topLoc[] = new int[2];
-        top.getLocationOnScreen(topLoc);
-        int BottomLoc[] = new int[2];
-        bottom.getLocationOnScreen(BottomLoc);
-
-
-        Log.e("dd", "topY: "+ topLoc[1]+" BottomY:" + BottomLoc[1]);
-        Log.e("kk",getABSize()+"");
-        Log.e("kk",(size.y-getStatusBarHeight()-getABSize())/tv.getLineHeight()+"");
-        Log.e("kk",(float)(BottomLoc[1]-topLoc[1])/tv.getLineHeight()+"");
-        Log.e("kk",size.y/tv.getTextSize()+"");
-
-    }
-
-    float getABSize(){
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-        } else return 0;
-    }
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-
-
-        return result;
-    }
-
-    int getNavigationBarSize(){
-        Resources resources = getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
-        }
-        return 0;
     }
 
 
     @Override
     protected Viewable initView() {
-
         return new MainView(this, findViewById(android.R.id.content));
     }
 
@@ -137,7 +71,6 @@ public class MainActivity extends BaseActivity {
             case R.id.fileBrowser:
                 startActivity(
                         new Intent(this, FileBrowserActivity.class));
-
         }
         return true;
     }

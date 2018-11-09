@@ -29,6 +29,7 @@ import ru.scapegoats.truereader.activities.books.BookView;
 import ru.scapegoats.truereader.activities.books.booktypes.TextableBooks;
 import ru.scapegoats.truereader.activities.books.viewpager.MyPagerAdapter;
 import ru.scapegoats.truereader.modules.BaseActivity;
+import ru.scapegoats.truereader.utils.Utils;
 
 public class PageDivider {
 
@@ -88,7 +89,7 @@ public class PageDivider {
             , boolean statusBarExist
             , boolean navigationBarExist) {
         //TODO: add possibility to calculate without ab,sb,nb
-        float textViewHeight=getDisplayHeight() - getActionBarHeight()-getStatusBarHeight()-
+        float textViewHeight=getDisplayHeight() + Utils.getNavigationBarSize(activity) -
                 activity.getResources().getDimension(R.dimen.margin)*2;
         return (int)(textViewHeight/getRowHeight());
     }
@@ -98,33 +99,7 @@ public class PageDivider {
         return ((TextView)view).getLineHeight();
     }
 
-    private float getActionBarHeight(){
-        TypedValue tv = new TypedValue();
-        if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data,activity.getResources().getDisplayMetrics());
-        } else return 0;
-    }
 
-    private float getStatusBarHeight() {
-        float result = 0;
-        int resourceId = activity.getResources().getIdentifier(
-                "status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = activity.getResources().getDimensionPixelSize(resourceId);
-
-        }
-        return result;
-    }
-
-    private int getNavigationBarSize(){
-        Resources resources = activity.getResources();
-        int resourceId = resources.getIdentifier(
-                "navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
-        }
-        return 0;
-    }
 
 
 

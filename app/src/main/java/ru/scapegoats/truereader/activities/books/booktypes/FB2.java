@@ -124,7 +124,7 @@ public class FB2 extends TextableBooks {
     }
 
     private void getAuthorName(Node author){
-        StringBuilder builder=new StringBuilder("\n\n\t\t\t");
+        StringBuilder builder=new StringBuilder("\n\t\t\t");
         for (Node child = author.getFirstChild(); child != null; child = child.getNextSibling()) {
             builder.append(child.getFirstChild().getNodeValue()).append("   ");
         }

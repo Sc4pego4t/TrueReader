@@ -1,10 +1,12 @@
 package ru.scapegoats.truereader.activities.books.viewpager;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import ru.scapegoats.truereader.R;
 
-public class PageFragment extends Fragment {
+public class PageFragment extends Fragment{
 
     private String text;
     private static String TEXT="text";
@@ -32,16 +34,20 @@ public class PageFragment extends Fragment {
         text = (getArguments() != null) ? getArguments().getString(TEXT) : "";
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result=inflater.inflate(R.layout.page_fragment, container, false);
         TextView pageText = result.findViewById(R.id.pageText);
-        //pageText.setLineSpacing(0,0.75f);
-        Log.e("Lines",pageText.getLineCount()+"");
         pageText.setText(text);
+
+        //Pass our touch to parent activity to handle it
+        pageText.setOnTouchListener((view, motionEvent) -> {
+            getActivity().onTouchEvent(motionEvent);
+            return true;
+        });
         return result;
     }
-
 
 }
