@@ -78,12 +78,11 @@ public class FB2 extends TextableBooks {
                 getXmlDescription(start);
                 return;
             }
-            Log.e("tag",tag);
+//            Log.e("tag",tag);
         }
         counter++;
         if (start.getNodeValue()!= null && !start.getNodeValue().isEmpty()) {
-            fileReader.append(start.getNodeValue().replace('<','(')
-                    .replace('>',')')).append(" <br> \t\t\t\t");
+            fileReader.append(start.getNodeValue()).append("\n\t\t\t\t");
         }
         for (Node child = start.getFirstChild(); child != null; child = child.getNextSibling()) {
             stepThrough(child);
@@ -109,21 +108,23 @@ public class FB2 extends TextableBooks {
         }
     }
 
+    //TODO italic?
+
     private void makeItalicAndWhitespaced(String string){
-        Log.e("AAA",string);
-        String builder = "<i>" + string +
-                "</i> <br> <br> \t\t\t";
+        String builder = string +
+                "\n\n\t\t\t";
         fileReader.append(builder);
     }
 
+    //TODO bold?
     private void makeBoldAndWhitespaced(String string){
-        String builder = "<b>" + string +
-                "</b> <br> <br> \t\t\t";
+        String builder = string +
+                "\n\n\t\t\t";
         fileReader.append(builder);
     }
 
     private void getAuthorName(Node author){
-        StringBuilder builder=new StringBuilder(" <br> \t\t\t");
+        StringBuilder builder=new StringBuilder("\n\n\t\t\t");
         for (Node child = author.getFirstChild(); child != null; child = child.getNextSibling()) {
             builder.append(child.getFirstChild().getNodeValue()).append("   ");
         }

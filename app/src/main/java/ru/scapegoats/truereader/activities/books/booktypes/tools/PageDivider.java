@@ -2,6 +2,8 @@ package ru.scapegoats.truereader.activities.books.booktypes.tools;
 
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.text.Html;
+import android.text.Layout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
@@ -31,16 +33,17 @@ import ru.scapegoats.truereader.modules.BaseActivity;
 public class PageDivider {
 
 
-    volatile private Integer symbolsInRowCount=0, rowsCount;
+    private int rowsCount;
     private float rowsMultiplyer=0.75f;
-    BaseActivity activity;
-    String text;
+    private BaseActivity activity;
+    private String text;
 
     public PageDivider(BaseActivity activity, float textSize, String text){
         this.activity=activity;
         this.text=text;
-        getSymbolsInRowCount(textSize,activity);
         rowsCount=getRowsCount(true,true,true);
+        divideOnPage(textSize,activity);
+
 
     }
 
@@ -50,19 +53,26 @@ public class PageDivider {
         ((BookView)activity.view).vPagerReader.setAdapter(new MyPagerAdapter(activity,list));
     }
 
+
     Thread layout;
-    private void getSymbolsInRowCount(float textSize, BaseActivity activity){
+    private void  divideOnPage(float textSize, BaseActivity activity){
+        List<String> pages = new ArrayList<>();
         View view=LayoutInflater.from(activity).inflate(R.layout.page_fragment,null);
         ((BookView)activity.view).layout.addView(view);
+        ((TextView)view).setText(text);
         view.setVisibility(View.INVISIBLE);
         //size = ((TextView) view).getLayout().getLineEnd(0);
-
          view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
              if(!isCreated) {
                  isCreated=true;
-                 Log.e("why", ((TextView) view).getLayout().getLineEnd(0) + 1 + "");
-                 symbolsInRowCount = ((TextView) view).getLayout().getLineEnd(0) + 1;
-                 createAdapter(getPages(text));
+                 int totalRowsCount = ((TextView) view).getLineCount();
+                 Layout layout=((TextView) view).getLayout();
+                 for (int i = 0; i < totalRowsCount-rowsCount; i+=rowsCount) {
+                     int start=layout.getLineStart(i);
+                     int end=layout.getLineEnd(i+rowsCount-1);
+                     pages.add(((TextView) view).getText().subSequence(start,end).toString());
+                 }
+                 createAdapter(pages);
              }
          });
     }
@@ -116,54 +126,6 @@ public class PageDivider {
         return 0;
     }
 
-    static private String newLine="<br>";
 
-
-    private List<String> getPages(String text) {
-        List<String> pageList = new ArrayList<>();
-        String divider = " ";
-
-        Log.e("rows and cols", rowsCount + "//" + symbolsInRowCount);
-        int currentRow = 0, currentColumn = 0;
-
-        StringBuilder builder = new StringBuilder();
-
-        StringTokenizer tokenizer = new StringTokenizer(text, divider);
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            char[] array = token.toCharArray();
-            builder.append(array);
-//            Log.e("token",token+pageList.size());
-
-            if (array[0] == '\n' || token.equals(newLine)) {
-                currentRow++;
-                currentColumn = 0;
-                if (currentRow >= rowsCount-1) {
-                    pageList.add(builder.toString());
-                    builder = new StringBuilder();
-                    currentRow = 0;
-                }
-            } else {
-                builder.append(divider);
-            }
-
-
-            int size = array.length;
-            currentColumn += size+1;
-            if (currentColumn >= symbolsInRowCount-1) {
-                currentColumn = size;
-                currentRow++;
-                //Log.e("ROWS",currentRow+" "+currentColumn);
-                if (currentRow >= rowsCount) {
-                    pageList.add(builder.toString());
-                    builder = new StringBuilder();
-                    currentRow = 0;
-                }
-            }
-        }
-        pageList.add(builder.toString());
-        //pageList.add(currentPageText.toString());
-        return pageList;
-    }
 
 }

@@ -39,7 +39,7 @@ public class PageFragment extends Fragment {
         TextView pageText = result.findViewById(R.id.pageText);
         //pageText.setLineSpacing(0,0.75f);
         Log.e("Lines",pageText.getLineCount()+"");
-        pageText.setText(Html.fromHtml(text));
+        pageText.setText(text);
         return result;
     }
 
