@@ -4,5 +4,6 @@
     <dimen name="secondaryText">15sp</dimen>
     <dimen name="margin">10dp</dimen>
     <dimen name="seekBarMargin">4dp</dimen>
+    <dimen name="dialogPadding">140dp</dimen>
     <dimen name="seekBarBackgroundHeight">40dp</dimen>
 </resources>

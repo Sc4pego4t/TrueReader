@@ -43,8 +43,8 @@ public class FB2 extends TextableBooks {
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
             try {
                 Document document = builder.parse(file);
+                long hist=System.currentTimeMillis();
                 stepThrough(document.getDocumentElement());
-
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (SAXException e) {

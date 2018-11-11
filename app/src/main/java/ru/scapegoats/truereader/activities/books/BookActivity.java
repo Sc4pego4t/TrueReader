@@ -2,6 +2,7 @@ package ru.scapegoats.truereader.activities.books;
 
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,8 @@ public class BookActivity extends BaseActivity<BookView> {
         setContentView(R.layout.read_layout);
         super.onCreate(savedInstanceState);
         View decorView = getWindow().getDecorView();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build();     StrictMode.setThreadPolicy(policy);
+
 
         int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -51,6 +54,7 @@ public class BookActivity extends BaseActivity<BookView> {
     }
 
     boolean isUIShowed=true;
+
     private void hideSystemUI() {
         isUIShowed=false;
         // Enables regular immersive mode.
@@ -68,7 +72,7 @@ public class BookActivity extends BaseActivity<BookView> {
     }
 
     // Shows the system bars by removing all the flags
-// except for the ones that make the content appear under the system bars.
+    // except for the ones that make the content appear under the system bars.
     private void showSystemUI() {
         isUIShowed=true;
         View decorView = getWindow().getDecorView();

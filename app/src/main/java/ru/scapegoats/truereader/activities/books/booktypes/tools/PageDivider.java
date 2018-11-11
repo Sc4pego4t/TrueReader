@@ -1,7 +1,13 @@
 package ru.scapegoats.truereader.activities.books.booktypes.tools;
 
 import android.graphics.Point;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.util.Log;
+import android.view.CollapsibleActionView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +16,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.activities.books.BookView;
 import ru.scapegoats.truereader.activities.books.viewpager.MyPagerAdapter;
 import ru.scapegoats.truereader.modules.BaseActivity;
+import ru.scapegoats.truereader.modules.ProgressDialog;
 import ru.scapegoats.truereader.utils.Utils;
 
 public class PageDivider {
@@ -23,11 +35,14 @@ public class PageDivider {
     private float textSize;
     private BaseActivity activity;
     private String text;
+    private ProgressDialog progressDialog;
 
-    public PageDivider(BaseActivity activity, float textSize, String text){
+    public PageDivider(BaseActivity activity, float textSize, String text, ProgressDialog progressDialog){
         this.activity=activity;
         this.text=text;
         this.textSize=textSize;
+        this.progressDialog=progressDialog;
+
         rowsCount=getRowsCount(true,true,true);
 
     }
@@ -42,29 +57,51 @@ public class PageDivider {
         ((BookView)activity.view).vPagerReader.setAdapter(new MyPagerAdapter(activity,list));
     }
 
-    private void  divideOnPage(float textSize, BaseActivity activity){
-        List<String> pages = new ArrayList<>();
-        View view=LayoutInflater.from(activity).inflate(R.layout.page_fragment,null);
-        TextView textView=view.findViewById(R.id.pageText);
-        ((BookView)activity.view).layout.addView(view);
+    private void  divideOnPage(float textSize, BaseActivity activity) {
 
-        textView.setText(text);
+        List<String> pages = new ArrayList<>();
+        View view = LayoutInflater.from(activity).inflate(R.layout.page_fragment, null);
+        TextView textView = view.findViewById(R.id.pageText);
+
         view.setVisibility(View.INVISIBLE);
 
+        ((BookView) activity.view).layout.addView(view);
+
+
         view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-             if(!isCreated) {
-                 isCreated=true;
-                 int totalRowsCount = textView.getLineCount();
-                 view.setVisibility(View.GONE);
-                 Layout layout=textView.getLayout();
-                 for (int i = 0; i < totalRowsCount-rowsCount; i+=rowsCount) {
-                     int start=layout.getLineStart(i);
-                     int end=layout.getLineEnd(i+rowsCount-1);
-                     pages.add(textView.getText().subSequence(start,end).toString());
-                 }
-                 createAdapter(pages);
-             }
+            if (!isCreated) {
+                Layout layout = textView.getLayout();
+                isCreated = true;
+
+                Disposable disposable = Single.fromCallable(()->{
+                        Log.e("thread",Thread.currentThread().getName());
+                        //create callback what return inflated with text layout
+                        return new StaticLayout(text
+                        , layout.getPaint()
+                        , layout.getWidth()
+                        , layout.getAlignment()
+                        , layout.getSpacingMultiplier()
+                        , layout.getSpacingAdd()
+                        , false); })
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((inflatedLayout)->{
+
+                            //divide text from inflated layout on pages
+                            Log.e("thread",Thread.currentThread().getName());
+                            view.setVisibility(View.GONE);
+                            for (int i = 0; i < inflatedLayout.getLineCount() - rowsCount; i += rowsCount) {
+                                int start = inflatedLayout.getLineStart(i);
+                                int end = inflatedLayout.getLineEnd(i + rowsCount - 1);
+                                pages.add(inflatedLayout.getText().subSequence(start, end).toString());
+                            }
+
+                            progressDialog.cancel();
+                            createAdapter(pages);
+                        });
+            }
         });
+
     }
 
     private float getDisplayHeight(){
@@ -88,8 +125,6 @@ public class PageDivider {
         TextView textView=view.findViewById(R.id.pageText);
         return textView.getLineHeight();
     }
-
-
 
 
 
