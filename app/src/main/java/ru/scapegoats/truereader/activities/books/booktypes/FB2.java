@@ -29,24 +29,45 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.scapegoats.truereader.R;
+import ru.scapegoats.truereader.activities.books.booktypes.tools.PageDivider;
 import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.BaseActivity;
+import ru.scapegoats.truereader.modules.ProgressDialog;
 
-public class FB2 extends TextableBooks {
+public class FB2 {
+
+    private BaseActivity activity;
+    private Book book;
+    //TODO RESTORE text after orientation changes
 
     public FB2(BaseActivity activity, Book book) {
-        super(activity, book);
+        this.activity = activity;
+        this.book = book;
     }
 
-    @Override
-    SpannableString getBookTextContent() {
-        readWholeXmlFile(book.getFile());
-        try {
-            return new SpannableString(spannable);
-        } finally {
-            spannable=null;
-        }
+    //TODO handle disposable, make it possible to cancel the task
+    public void createAdapter() {
+        ProgressDialog progressDialog=new ProgressDialog(activity
+                ,activity.getString(R.string.progressDialogOpenFile));
+        progressDialog.show();
+        Disposable disposable=Completable.fromCallable(()->{
+                readWholeXmlFile(book.getFile());
+                return true;
+        })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(()->{
+
+                    new PageDivider(activity,new SpannableString(spannable),progressDialog)
+                            .createAdapter();
+                    spannable=null;
+                });
     }
 
     //TODO compute in another thread
@@ -69,7 +90,7 @@ public class FB2 extends TextableBooks {
 
     //fb2 xml tag in end of the file, it useless so skip this content
     private static List<String> TagsWithUselessContent
-            = new ArrayList<>(Arrays.asList("binary","id","program-used",
+            = new ArrayList<>(Arrays.asList("binary","id","program-used","sup",
             "genre","lang","src-lang","document-info","myheader","title","epigraph"));
     private static String descr="description";
 
@@ -112,7 +133,7 @@ public class FB2 extends TextableBooks {
             int endPos=spannable.length();
             switch (tag){
                 case "emphasis":
-                    spannable.setSpan(new UnderlineSpan(),startPos
+                    spannable.setSpan(new StyleSpan(Typeface.ITALIC),startPos
                             ,endPos,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     break;
                 case "strong":
