@@ -83,8 +83,6 @@ public class FB2 extends TextableBooks {
 
     }
     private void getXmlDescription(Node descr){
-        NodeList list=descr.getChildNodes();
-
         for (Node child = descr.getFirstChild(); child != null; child = child.getNextSibling()) {
             if(child instanceof Element) {
                 String tag = ((Element) child).getTagName();

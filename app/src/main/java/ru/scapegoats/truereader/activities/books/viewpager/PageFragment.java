@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import ru.scapegoats.truereader.R;
@@ -40,7 +42,7 @@ public class PageFragment extends Fragment{
 
         //Pass our touch to parent activity to handle it
         pageText.setOnTouchListener((view, motionEvent) -> {
-            getActivity().onTouchEvent(motionEvent);
+            Objects.requireNonNull(getActivity()).onTouchEvent(motionEvent);
             return true;
         });
         return result;

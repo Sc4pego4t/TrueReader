@@ -42,13 +42,12 @@ public class PageDivider {
         this.text=text;
         this.textSize=textSize;
         this.progressDialog=progressDialog;
-
-        rowsCount=getRowsCount(true,true,true);
+        rowsCount=getRowsCount();
 
     }
 
     public void createAdapter(){
-        divideOnPage(textSize,activity);
+        divideOnPage(activity);
     }
 
     private boolean isCreated=false;
@@ -57,7 +56,7 @@ public class PageDivider {
         ((BookView)activity.view).vPagerReader.setAdapter(new MyPagerAdapter(activity,list));
     }
 
-    private void  divideOnPage(float textSize, BaseActivity activity) {
+    private void  divideOnPage(BaseActivity activity) {
 
         List<String> pages = new ArrayList<>();
         View view = LayoutInflater.from(activity).inflate(R.layout.page_fragment, null);
@@ -73,29 +72,32 @@ public class PageDivider {
                 Layout layout = textView.getLayout();
                 isCreated = true;
 
-                Disposable disposable = Single.fromCallable(()->{
-                        Log.e("thread",Thread.currentThread().getName());
-                        //create callback what return inflated with text layout
-                        return new StaticLayout(text
-                        , layout.getPaint()
-                        , layout.getWidth()
-                        , layout.getAlignment()
-                        , layout.getSpacingMultiplier()
-                        , layout.getSpacingAdd()
-                        , false); })
+                //TODO handle disposable
+                Disposable disposable = Single.fromCallable(() -> {
+
+                    //create callback what return inflated with text layout
+                    return new StaticLayout(text
+                            , layout.getPaint()
+                            , layout.getWidth()
+                            , layout.getAlignment()
+                            , layout.getSpacingMultiplier()
+                            , layout.getSpacingAdd()
+                            , false);
+                })
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((inflatedLayout)->{
+                        .subscribe((inflatedLayout) -> {
 
                             //divide text from inflated layout on pages
-                            Log.e("thread",Thread.currentThread().getName());
+
                             view.setVisibility(View.GONE);
                             for (int i = 0; i < inflatedLayout.getLineCount() - rowsCount; i += rowsCount) {
                                 int start = inflatedLayout.getLineStart(i);
                                 int end = inflatedLayout.getLineEnd(i + rowsCount - 1);
                                 pages.add(inflatedLayout.getText().subSequence(start, end).toString());
                             }
-
+                            ((BookView) activity.view).seekBar.setMax(pages.size());
+                            ((BookView) activity.view).pagesInfo.setText(1+"/"+pages.size());
                             progressDialog.cancel();
                             createAdapter(pages);
                         });
@@ -111,10 +113,7 @@ public class PageDivider {
         return size.y;
     }
 
-    private int getRowsCount(boolean actionBarExist
-            , boolean statusBarExist
-            , boolean navigationBarExist) {
-        //TODO: add possibility to calculate without ab,sb,nb
+    private int getRowsCount() {
         float textViewHeight=getDisplayHeight() + Utils.getNavigationBarSize(activity) -
                 activity.getResources().getDimension(R.dimen.margin)*2;
         return (int)(textViewHeight/getRowHeight());
