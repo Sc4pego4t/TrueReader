@@ -44,10 +44,7 @@ public class BookPresenter implements Presenter<BookView> {
     }
 
     private void openFB2(Book book) {
-        float textSize=view.activity.getResources().getDimension(R.dimen.pageTextSize);
-        new FB2(view.activity,textSize,book).createAdapter();
-        //view.tvBookText.setText(pageList.get(0));
-        //Log.e("GG", "OPEN Pdf");
+        new FB2(view.activity,book).createAdapter();
     }
 
 

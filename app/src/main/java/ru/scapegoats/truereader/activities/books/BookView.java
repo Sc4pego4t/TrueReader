@@ -1,5 +1,6 @@
 package ru.scapegoats.truereader.activities.books;
 
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -27,18 +28,24 @@ public class BookView implements Viewable {
         layout = rootView.findViewById(R.id.layout);
         seekBar=rootView.findViewById(R.id.seekBar);
         pagesInfo=rootView.findViewById(R.id.pagesInfo);
-
-        //change seek bar bottom margin to display it above navigation bar
         seekBarBackground = rootView.findViewById(R.id.seekBarBackground);
-        RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) seekBarBackground.getLayoutParams();
-        params.bottomMargin = Utils.getNavigationBarSize(activity);
-        seekBarBackground.setLayoutParams(params);
+
+        if(activity.getResources().getConfiguration()
+                .orientation== Configuration.ORIENTATION_PORTRAIT) {
+            //change seek bar bottom margin to display it above navigation bar if orientation
+            //is portrait
+
+            RelativeLayout.LayoutParams params =
+                    (RelativeLayout.LayoutParams) seekBarBackground.getLayoutParams();
+            params.bottomMargin = Utils.getNavigationBarSize(activity);
+            seekBarBackground.setLayoutParams(params);
+        }
 
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                String info = i+"/"+seekBar.getMax();
+                String info = i+1+"/"+seekBar.getMax();
                 pagesInfo.setText(info);
             }
 
@@ -62,8 +69,8 @@ public class BookView implements Viewable {
             @Override
             public void onPageSelected(int position) {
                 Log.e("page",position+"");
-                seekBar.setProgress(position+1);
-                String info = (position+1)+"/"+seekBar.getMax();
+                seekBar.setProgress(position);
+                String info = position+1+"/"+seekBar.getMax();
                 pagesInfo.setText(info);
             }
 

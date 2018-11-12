@@ -23,8 +23,8 @@ import ru.scapegoats.truereader.modules.BaseActivity;
 
 public class FB2 extends TextableBooks {
 
-    public FB2(BaseActivity activity, float textSize, Book book) {
-        super(activity, textSize, book);
+    public FB2(BaseActivity activity, Book book) {
+        super(activity, book);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class FB2 extends TextableBooks {
             }
             if(tag.equals(descr)){
                 getXmlDescription(start);
-                return;
+                return; 
             }
         }
         if (start.getNodeValue()!= null && !start.getNodeValue().isEmpty()) {

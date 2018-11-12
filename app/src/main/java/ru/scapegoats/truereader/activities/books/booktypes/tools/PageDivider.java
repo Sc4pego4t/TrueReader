@@ -1,13 +1,10 @@
 package ru.scapegoats.truereader.activities.books.booktypes.tools;
 
+import android.content.res.Configuration;
 import android.graphics.Point;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.text.Layout;
 import android.text.StaticLayout;
-import android.text.TextPaint;
 import android.util.Log;
-import android.view.CollapsibleActionView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -32,22 +28,19 @@ public class PageDivider {
 
 
     private int rowsCount;
-    private float textSize;
     private BaseActivity activity;
     private String text;
     private ProgressDialog progressDialog;
 
-    public PageDivider(BaseActivity activity, float textSize, String text, ProgressDialog progressDialog){
+    public PageDivider(BaseActivity activity, String text, ProgressDialog progressDialog){
         this.activity=activity;
         this.text=text;
-        this.textSize=textSize;
         this.progressDialog=progressDialog;
         rowsCount=getRowsCount();
-
     }
 
     public void createAdapter(){
-        divideOnPage(activity);
+        divideOnPages(activity);
     }
 
     private boolean isCreated=false;
@@ -56,8 +49,12 @@ public class PageDivider {
         ((BookView)activity.view).vPagerReader.setAdapter(new MyPagerAdapter(activity,list));
     }
 
-    private void  divideOnPage(BaseActivity activity) {
 
+    //TODO change of orientation takes a lot of time
+    // , so maybe we should provide possibility of changing orientation only in settings of our app
+    private void divideOnPages(BaseActivity activity) {
+
+        Log.e("rows",rowsCount+"");
         List<String> pages = new ArrayList<>();
         View view = LayoutInflater.from(activity).inflate(R.layout.page_fragment, null);
         TextView textView = view.findViewById(R.id.pageText);
@@ -83,8 +80,7 @@ public class PageDivider {
                             , layout.getSpacingMultiplier()
                             , layout.getSpacingAdd()
                             , false);
-                })
-                        .subscribeOn(Schedulers.computation())
+                        }).subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((inflatedLayout) -> {
 
@@ -94,10 +90,11 @@ public class PageDivider {
                             for (int i = 0; i < inflatedLayout.getLineCount() - rowsCount; i += rowsCount) {
                                 int start = inflatedLayout.getLineStart(i);
                                 int end = inflatedLayout.getLineEnd(i + rowsCount - 1);
+                                Log.e("rows",inflatedLayout.getText().subSequence(start, end).toString());
                                 pages.add(inflatedLayout.getText().subSequence(start, end).toString());
                             }
                             ((BookView) activity.view).seekBar.setMax(pages.size());
-                            ((BookView) activity.view).pagesInfo.setText(1+"/"+pages.size());
+                            ((BookView) activity.view).pagesInfo.setText(1 + "/" + pages.size());
                             progressDialog.cancel();
                             createAdapter(pages);
                         });
@@ -114,8 +111,14 @@ public class PageDivider {
     }
 
     private int getRowsCount() {
-        float textViewHeight=getDisplayHeight() + Utils.getNavigationBarSize(activity) -
-                activity.getResources().getDimension(R.dimen.margin)*2;
+        float textViewHeight = getDisplayHeight()
+                - activity.getResources().getDimension(R.dimen.margin)*2;
+
+        //add navigation bar size if orientation is portrait
+        if(activity.getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT){
+            textViewHeight+=+ Utils.getNavigationBarSize(activity);
+        }
+
         return (int)(textViewHeight/getRowHeight());
     }
 
@@ -124,6 +127,7 @@ public class PageDivider {
         TextView textView=view.findViewById(R.id.pageText);
         return textView.getLineHeight();
     }
+
 
 
 

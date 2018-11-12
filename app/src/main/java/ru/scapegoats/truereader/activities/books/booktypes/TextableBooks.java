@@ -28,9 +28,8 @@ public abstract class TextableBooks {
     Book book;
     private TextableBooks(){}
 
-    TextableBooks(BaseActivity activity, float textSize, Book book){
+    TextableBooks(BaseActivity activity, Book book){
         this.activity=activity;
-        this.textSize=textSize;
         this.book=book;
 
 
@@ -42,7 +41,7 @@ public abstract class TextableBooks {
                 ,activity.getString(R.string.progressDialogOpenFile));
         progressDialog.show();
 
-        new PageDivider(activity, textSize, getBookTextContent(),progressDialog).createAdapter();
+        new PageDivider(activity, getBookTextContent(),progressDialog).createAdapter();
     }
 
     abstract String getBookTextContent();
