@@ -3,6 +3,7 @@ package ru.scapegoats.truereader.activities.books.booktypes.tools;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.text.Layout;
+import android.text.SpannableString;
 import android.text.StaticLayout;
 import android.util.Log;
 import android.view.Display;
@@ -29,10 +30,10 @@ public class PageDivider {
 
     private int rowsCount;
     private BaseActivity activity;
-    private String text;
+    private SpannableString text;
     private ProgressDialog progressDialog;
 
-    public PageDivider(BaseActivity activity, String text, ProgressDialog progressDialog){
+    public PageDivider(BaseActivity activity, SpannableString text, ProgressDialog progressDialog){
         this.activity=activity;
         this.text=text;
         this.progressDialog=progressDialog;
@@ -45,7 +46,7 @@ public class PageDivider {
 
     private boolean isCreated=false;
 
-    private void createAdapter(List<String> list){
+    private void createAdapter(List<SpannableString> list){
         ((BookView)activity.view).vPagerReader.setAdapter(new MyPagerAdapter(activity,list));
     }
 
@@ -54,8 +55,7 @@ public class PageDivider {
     // , so maybe we should provide possibility of changing orientation only in settings of our app
     private void divideOnPages(BaseActivity activity) {
 
-        Log.e("rows",rowsCount+"");
-        List<String> pages = new ArrayList<>();
+        List<SpannableString> pages = new ArrayList<>();
         View view = LayoutInflater.from(activity).inflate(R.layout.page_fragment, null);
         TextView textView = view.findViewById(R.id.pageText);
 
@@ -63,6 +63,7 @@ public class PageDivider {
 
         ((BookView) activity.view).layout.addView(view);
 
+        textView.setText(text);
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             if (!isCreated) {
@@ -85,13 +86,11 @@ public class PageDivider {
                         .subscribe((inflatedLayout) -> {
 
                             //divide text from inflated layout on pages
-
                             view.setVisibility(View.GONE);
                             for (int i = 0; i < inflatedLayout.getLineCount() - rowsCount; i += rowsCount) {
                                 int start = inflatedLayout.getLineStart(i);
                                 int end = inflatedLayout.getLineEnd(i + rowsCount - 1);
-                                Log.e("rows",inflatedLayout.getText().subSequence(start, end).toString());
-                                pages.add(inflatedLayout.getText().subSequence(start, end).toString());
+                                pages.add((SpannableString)inflatedLayout.getText().subSequence(start, end));
                             }
                             ((BookView) activity.view).seekBar.setMax(pages.size());
                             ((BookView) activity.view).pagesInfo.setText(1 + "/" + pages.size());

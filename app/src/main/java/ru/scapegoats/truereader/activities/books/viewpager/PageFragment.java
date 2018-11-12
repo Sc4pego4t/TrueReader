@@ -2,6 +2,7 @@ package ru.scapegoats.truereader.activities.books.viewpager;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,13 @@ import ru.scapegoats.truereader.R;
 
 public class PageFragment extends Fragment{
 
-    private String text;
+    private SpannableString text;
     private static String TEXT="text";
 
-    static PageFragment newInstance(String text){
+    static PageFragment newInstance(SpannableString text){
         PageFragment fragment = new PageFragment();
         Bundle args=new Bundle();
-        args.putString(TEXT, text);
+        args.putCharSequence(TEXT, text);
         fragment.setArguments(args);
         return fragment;
     }
@@ -29,7 +30,7 @@ public class PageFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        text = (getArguments() != null) ? getArguments().getString(TEXT) : "";
+        text = (SpannableString) ((getArguments() != null) ? getArguments().get(TEXT) : "");
     }
 
     @SuppressLint("ClickableViewAccessibility")

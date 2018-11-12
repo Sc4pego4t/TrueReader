@@ -1,5 +1,6 @@
 package ru.scapegoats.truereader.activities.books.viewpager;
 
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,9 +17,9 @@ import ru.scapegoats.truereader.modules.BaseActivity;
 public class MyPagerAdapter extends FragmentStatePagerAdapter {
 
 
-    private List<String> pages;
+    private List<SpannableString> pages;
     private BaseActivity activity;
-    public MyPagerAdapter(BaseActivity activity, List<String> pages){
+    public MyPagerAdapter(BaseActivity activity, List<SpannableString> pages){
         super(activity.getSupportFragmentManager());
         this.pages=pages;
         this.activity=activity;

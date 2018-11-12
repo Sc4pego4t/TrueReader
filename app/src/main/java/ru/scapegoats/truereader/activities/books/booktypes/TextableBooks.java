@@ -1,5 +1,6 @@
 package ru.scapegoats.truereader.activities.books.booktypes;
 
+import android.text.SpannableString;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ import ru.scapegoats.truereader.modules.ProgressDialog;
 
 public abstract class TextableBooks {
 
-    private BaseActivity activity;
+    protected BaseActivity activity;
     private float textSize;
     Book book;
     private TextableBooks(){}
@@ -44,7 +45,7 @@ public abstract class TextableBooks {
         new PageDivider(activity, getBookTextContent(),progressDialog).createAdapter();
     }
 
-    abstract String getBookTextContent();
+    abstract SpannableString getBookTextContent();
 
 
 }

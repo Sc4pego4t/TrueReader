@@ -1,5 +1,16 @@
 package ru.scapegoats.truereader.activities.books.booktypes;
 
+import android.graphics.Typeface;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.AlignmentSpan;
+import android.text.style.CharacterStyle;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 
 import org.w3c.dom.Document;
@@ -18,6 +29,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.BaseActivity;
 
@@ -28,23 +40,23 @@ public class FB2 extends TextableBooks {
     }
 
     @Override
-    String getBookTextContent() {
+    SpannableString getBookTextContent() {
         readWholeXmlFile(book.getFile());
         try {
-            return fileReader.toString();
+            return new SpannableString(spannable);
         } finally {
-            fileReader=null;
+            spannable=null;
         }
     }
 
+    //TODO compute in another thread
     private void readWholeXmlFile(File file){
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
             try {
                 Document document = builder.parse(file);
-                long hist=System.currentTimeMillis();
-                stepThrough(document.getDocumentElement());
+                stepThrough(document.getDocumentElement(),null);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
@@ -60,66 +72,120 @@ public class FB2 extends TextableBooks {
             = new ArrayList<>(Arrays.asList("binary","id","program-used",
             "genre","lang","src-lang","document-info","myheader","title","epigraph"));
     private static String descr="description";
-    //read xml in order
-    private StringBuilder fileReader = new StringBuilder();
 
-    private void stepThrough (Node start) {
+    //read xml in order
+    //private StringBuilder fileReader = new StringBuilder();
+    private SpannableStringBuilder spannable=new SpannableStringBuilder("\n\n\t\t\t\t");
+
+
+    private int innertyCounter;
+    private boolean isInP=false;
+    private void stepThrough (Node start, String parentTag) {
+
+        String tag=parentTag;
         if(start instanceof Element) {
-            String tag = ((Element) start).getTagName();
+            tag = ((Element) start).getTagName();
             if(TagsWithUselessContent.contains(tag)){
                 return;
             }
             if(tag.equals(descr)){
-                getXmlDescription(start);
-                return; 
+                getXmlDescription(start,null);
+                return;
+            }
+            if(tag.equals("p")){
+                innertyCounter=0;
+                isInP=true;
             }
         }
+
+
+
         if (start.getNodeValue()!= null && !start.getNodeValue().isEmpty()) {
-            fileReader.append(start.getNodeValue()).append("\n\t\t\t\t");
+            //Log.e("tag=",tag+"/"+start.getNodeValue());
+            int startPos=spannable.length();
+            if(isInP && innertyCounter==0) {
+                isInP=false;
+                innertyCounter++;
+                spannable.append("\n\t\t\t\t");
+            }
+            spannable.append(start.getNodeValue());
+            int endPos=spannable.length();
+            switch (tag){
+                case "emphasis":
+                    spannable.setSpan(new UnderlineSpan(),startPos
+                            ,endPos,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+                case "strong":
+                    spannable.setSpan(new StyleSpan(Typeface.BOLD)
+                            ,startPos,endPos,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+            }
+
+
         }
         for (Node child = start.getFirstChild(); child != null; child = child.getNextSibling()) {
-            stepThrough(child);
+            stepThrough(child,tag);
         }
-
     }
-    private void getXmlDescription(Node descr){
-        for (Node child = descr.getFirstChild(); child != null; child = child.getNextSibling()) {
-            if(child instanceof Element) {
-                String tag = ((Element) child).getTagName();
-//                Log.e("tag",tag);
-                switch (tag){
-                    case "title-info":getXmlDescription(child);break;
-                    case "document-info":return;
-                    case "author":getAuthorName(child);break;
-                    case "book-title":makeBoldAndWhitespaced(child.getFirstChild().getNodeValue());break;
-                    case "annotation":makeItalicAndWhitespaced(child
-                            .getFirstChild().getFirstChild().getNodeValue());break;
+
+
+    private void appendBold(String text){
+        int start=spannable.length();
+        spannable.append(text);
+
+        spannable.setSpan(new StyleSpan(Typeface.BOLD)
+                ,start,spannable.length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void appendItalic(String text){
+        int start=spannable.length();
+        spannable.append(text);
+        spannable.setSpan(new StyleSpan(Typeface.ITALIC)
+                ,start,spannable.length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.append("\n\n\t\t\t\t");
+    }
+
+    private void getXmlDescription(Node start,String parentTag){
+        String tag=parentTag;
+        if(start instanceof Element) {
+            tag = ((Element) start).getTagName();
+
+            if(parentTag!=null) {
+                if(parentTag.equals("title-info") && tag.equals("author")){
+                    getAuthor(start);
+                }
+                if(tag.equals("p")){
+                    tag=parentTag;
                 }
             }
         }
-    }
 
-    //TODO italic?
 
-    private void makeItalicAndWhitespaced(String string){
-        String builder = string +
-                "\n\n\t\t\t";
-        fileReader.append(builder);
-    }
+        if (start.getNodeValue()!= null && !start.getNodeValue().isEmpty()) {
+            //Log.e("tag=",tag+"/"+start.getNodeValue());
 
-    //TODO bold?
-    private void makeBoldAndWhitespaced(String string){
-        String builder = string +
-                "\n\n\t\t\t";
-        fileReader.append(builder);
-    }
-
-    private void getAuthorName(Node author){
-        StringBuilder builder=new StringBuilder("\n\t\t\t");
-        for (Node child = author.getFirstChild(); child != null; child = child.getNextSibling()) {
-            builder.append(child.getFirstChild().getNodeValue()).append("   ");
+            CharacterStyle style = null;
+            switch (tag){
+                case "book-title":
+                    appendBold(start.getNodeValue());
+                    spannable.append("\n\n\t\t\t\t");
+                    break;
+                case "annotation":
+                    appendItalic(start.getNodeValue());
+                    break;
+            }
         }
-        makeBoldAndWhitespaced(builder.toString());
+
+        for (Node child = start.getFirstChild(); child != null; child = child.getNextSibling()) {
+            getXmlDescription(child,tag);
+        }
+
     }
 
+    private void getAuthor(Node start){
+        for (Node child = start.getFirstChild(); child != null; child = child.getNextSibling()) {
+            appendBold(child.getFirstChild().getNodeValue()+" ");
+        }
+        spannable.append("\n\n\t\t\t\t");
+    }
 }
