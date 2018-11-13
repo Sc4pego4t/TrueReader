@@ -10,10 +10,8 @@ import ru.scapegoats.truereader.R;
 import ru.scapegoats.truereader.utils.ProgressDrawable;
 
 public class ProgressDialog extends Dialog {
-    String text;
-    public ProgressDialog(Context context,String text){
-        super(context);
-        this.text=text;
+    public ProgressDialog(Context context){
+        super(context,R.style.Theme_AppCompat_Light_NoActionBar);
     }
 
     @Override

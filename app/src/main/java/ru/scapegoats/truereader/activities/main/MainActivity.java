@@ -2,6 +2,7 @@ package ru.scapegoats.truereader.activities.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +37,23 @@ public class MainActivity extends BaseActivity {
         bar.setIndeterminateDrawable(new ProgressDrawable(getResources().getIntArray(R.array.progress_colors)));
     }
 
+    @Override
+    public void onBackPressed() {
+        long hist=System.currentTimeMillis();
+        StringBuilder stringBuilder=new StringBuilder();
+        for (int i = 0; i < 1000000; i++) {
+            stringBuilder.append(String.valueOf(i));
+        }
+        Log.e("time",System.currentTimeMillis()-hist+"");
+
+        hist=System.currentTimeMillis();
+        SpannableStringBuilder spannableStringBuilder=new SpannableStringBuilder();
+        for (int i = 0; i < 1000000; i++) {
+            spannableStringBuilder.append(String.valueOf(i));
+        }
+        Log.e("time",System.currentTimeMillis()-hist+"");
+
+    }
 
     @Override
     protected Viewable initView() {

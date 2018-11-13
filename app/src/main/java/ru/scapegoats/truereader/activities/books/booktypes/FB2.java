@@ -40,7 +40,7 @@ import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.BaseActivity;
 import ru.scapegoats.truereader.modules.ProgressDialog;
 
-public class FB2 {
+public class FB2 implements TextableFormats {
 
     private BaseActivity activity;
     private Book book;
@@ -52,15 +52,15 @@ public class FB2 {
     }
 
     //TODO handle disposable, make it possible to cancel the task
+    @Override
     public void createAdapter() {
-        ProgressDialog progressDialog=new ProgressDialog(activity
-                ,activity.getString(R.string.progressDialogOpenFile));
+        ProgressDialog progressDialog=new ProgressDialog(activity);
         progressDialog.show();
         Disposable disposable=Completable.fromCallable(()->{
                 readWholeXmlFile(book.getFile());
                 return true;
         })
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(()->{
 
@@ -95,12 +95,13 @@ public class FB2 {
     private static String descr="description";
 
     //read xml in order
-    //private StringBuilder fileReader = new StringBuilder();
     private SpannableStringBuilder spannable=new SpannableStringBuilder("\n\n\t\t\t\t");
 
 
     private int innertyCounter;
     private boolean isInP=false;
+
+
     private void stepThrough (Node start, String parentTag) {
 
         String tag=parentTag;
@@ -142,7 +143,6 @@ public class FB2 {
                     break;
             }
 
-
         }
         for (Node child = start.getFirstChild(); child != null; child = child.getNextSibling()) {
             stepThrough(child,tag);
@@ -183,9 +183,6 @@ public class FB2 {
 
 
         if (start.getNodeValue()!= null && !start.getNodeValue().isEmpty()) {
-            //Log.e("tag=",tag+"/"+start.getNodeValue());
-
-            CharacterStyle style = null;
             switch (tag){
                 case "book-title":
                     appendBold(start.getNodeValue());
