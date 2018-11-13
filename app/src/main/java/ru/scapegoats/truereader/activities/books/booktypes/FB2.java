@@ -53,9 +53,7 @@ public class FB2 implements TextableFormats {
 
     //TODO handle disposable, make it possible to cancel the task
     @Override
-    public void createAdapter() {
-        ProgressDialog progressDialog=new ProgressDialog(activity);
-        progressDialog.show();
+    public void createAdapter(ProgressDialog progressDialog) {
         Disposable disposable=Completable.fromCallable(()->{
                 readWholeXmlFile(book.getFile());
                 return true;

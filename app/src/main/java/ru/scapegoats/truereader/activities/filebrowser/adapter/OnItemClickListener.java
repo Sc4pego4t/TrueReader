@@ -77,10 +77,10 @@ public class OnItemClickListener implements View.OnClickListener {
 
     private String getFileNameWithoutExtension(File file) {
         String[] splitedName = file.getName().split(FileBrowserRVAdapter.DIVIDER);
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(splitedName[0]);
 
-        for (int i = 0; i < splitedName.length - 1; i++) {
-            result.append(splitedName[i]);
+        for (int i = 1; i < splitedName.length - 1; i++) {
+            result.append(".").append(splitedName[i]);
         }
         return result.toString();
     }

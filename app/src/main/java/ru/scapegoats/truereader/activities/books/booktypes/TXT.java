@@ -29,9 +29,8 @@ public class TXT implements TextableFormats {
     }
 
     @Override
-    public void createAdapter() {
-        ProgressDialog progressDialog=new ProgressDialog(activity);
-        progressDialog.show();
+    public void createAdapter(ProgressDialog progressDialog) {
+
         Disposable disposable= Single.fromCallable(()->{
             StringBuilder builder = new StringBuilder("\n\t\t\t\t");
             try {

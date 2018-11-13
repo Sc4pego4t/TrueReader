@@ -5,6 +5,7 @@ import ru.scapegoats.truereader.activities.books.booktypes.FB2;
 import ru.scapegoats.truereader.activities.books.booktypes.TXT;
 import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.Presenter;
+import ru.scapegoats.truereader.modules.ProgressDialog;
 
 public class BookPresenter implements Presenter<BookView> {
 
@@ -18,7 +19,10 @@ public class BookPresenter implements Presenter<BookView> {
         openBook(bookInfo);
     }
 
+    ProgressDialog progressDialog;
     private void openBook(Book book) {
+        progressDialog=new ProgressDialog(view.activity);
+        progressDialog.show();
         switch (book.getFileType()) {
             case PDF:
                 openPDF(book);
@@ -39,7 +43,7 @@ public class BookPresenter implements Presenter<BookView> {
     }
 
     private void openTXT(Book book) {
-        new TXT(view.activity,book).createAdapter();
+        new TXT(view.activity,book).createAdapter(progressDialog);
     }
 
     private void openPDF(Book book) {
@@ -51,7 +55,7 @@ public class BookPresenter implements Presenter<BookView> {
     }
 
     private void openFB2(Book book) {
-        new FB2(view.activity,book).createAdapter();
+        new FB2(view.activity,book).createAdapter(progressDialog);
     }
 
 
