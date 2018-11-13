@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class Book implements Serializable {
 
     public enum FileTypes implements Serializable {
-        FB2, EPUB, PDF, DJVU;
+        FB2, EPUB, PDF, DJVU, TXT;
     }
 
     private File file;

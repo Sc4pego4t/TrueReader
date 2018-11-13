@@ -2,11 +2,18 @@ package ru.scapegoats.truereader.activities.books.booktypes;
 
 import android.text.SpannableString;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Scanner;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.scapegoats.truereader.activities.books.booktypes.tools.PageDivider;
 import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.BaseActivity;
@@ -23,26 +30,35 @@ public class TXT implements TextableFormats {
 
     @Override
     public void createAdapter() {
-        book.getFile();
+        ProgressDialog progressDialog=new ProgressDialog(activity);
+        progressDialog.show();
+        Disposable disposable= Single.fromCallable(()->{
+            StringBuilder builder = new StringBuilder("\n\t\t\t\t");
+            try {
+                FileInputStream reader=new FileInputStream(book.getFile());
 
-        StringBuilder builder = new StringBuilder();
-        try {
-            FileReader reader=new FileReader(book.getFile());
-            Scanner scanner=new Scanner(reader);
+                Scanner scanner=new Scanner(reader,"windows-1251");
 
-            while (scanner.hasNextLine()) {
-                builder.append(scanner.nextLine());
+                while (scanner.hasNextLine()) {
+                    builder.append(scanner.nextLine()).append("\n\t\t\t\t");
+                }
+
+                reader.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            return builder;
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((str)->{
 
-            reader.close();
-            ProgressDialog progressDialog=new ProgressDialog(activity);
-            new PageDivider(activity
-                    ,new SpannableString(builder.toString()),progressDialog).createAdapter();
+                    new PageDivider(activity
+                            ,new SpannableString(str.toString()),progressDialog).createAdapter();
+                });
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
