@@ -1,6 +1,6 @@
 package ru.scapegoats.truereader.activities.books;
 
-import ru.scapegoats.truereader.R;
+import ru.scapegoats.truereader.activities.books.booktypes.EPUB;
 import ru.scapegoats.truereader.activities.books.booktypes.FB2;
 import ru.scapegoats.truereader.activities.books.booktypes.TXT;
 import ru.scapegoats.truereader.model.Book;
@@ -31,6 +31,7 @@ public class BookPresenter implements Presenter<BookView> {
                 openDJVU(book);
                 break;
             case EPUB:
+                openEPUB(book);
                 break;
             case FB2:
                 openFB2(book);
@@ -44,6 +45,10 @@ public class BookPresenter implements Presenter<BookView> {
 
     private void openTXT(Book book) {
         new TXT(view.activity,book).createAdapter(progressDialog);
+    }
+
+    private void openEPUB(Book book) {
+        new EPUB(view.activity,book).createAdapter(progressDialog);
     }
 
     private void openPDF(Book book) {
