@@ -68,7 +68,6 @@ public class FB2 implements TextableFormats {
                 });
     }
 
-    //TODO compute in another thread
     private void readWholeXmlFile(File file){
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         try {

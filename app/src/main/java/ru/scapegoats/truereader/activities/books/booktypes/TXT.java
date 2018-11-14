@@ -1,15 +1,16 @@
 package ru.scapegoats.truereader.activities.books.booktypes;
 
 import android.text.SpannableString;
+import android.util.Log;
+import android.widget.Toast;
+
+import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Scanner;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -31,12 +32,39 @@ public class TXT implements TextableFormats {
     @Override
     public void createAdapter(ProgressDialog progressDialog) {
 
-        Disposable disposable= Single.fromCallable(()->{
+
+        Disposable disposable = Single.fromCallable(() -> {
+
+
             StringBuilder builder = new StringBuilder("\n\t\t\t\t");
             try {
-                FileInputStream reader=new FileInputStream(book.getFile());
 
-                Scanner scanner=new Scanner(reader,"windows-1251");
+                //get file encoding with help of mozilla library
+                FileInputStream fis = new FileInputStream(book.getFile());
+
+                UniversalDetector detector = new UniversalDetector(null);
+
+                byte[] buf = new byte[4096];
+                int nread;
+                while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
+                    detector.handleData(buf, 0, nread);
+                }
+                detector.dataEnd();
+
+                String encoding = detector.getDetectedCharset();
+                if (encoding != null) {
+                    Log.e("Detected encoding = ", encoding);
+                } else {
+                    Log.e("No encoding detected.", "((");
+                    return null;
+                }
+
+                detector.reset();
+
+
+                FileInputStream reader = new FileInputStream(book.getFile());
+
+                Scanner scanner = new Scanner(reader, encoding);
 
                 while (scanner.hasNextLine()) {
                     builder.append(scanner.nextLine()).append("\n\t\t\t\t");
@@ -53,10 +81,18 @@ public class TXT implements TextableFormats {
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((str)->{
+                .subscribe((str) -> {
 
-                    new PageDivider(activity
-                            ,new SpannableString(str.toString()),progressDialog).createAdapter();
+                    if (str == null) {
+
+                        //TODO replace toast with dialog
+                        Toast.makeText(activity,
+                                "Unable to open file, reason - file has strange file encoding"
+                                , Toast.LENGTH_LONG).show();
+                    } else {
+                        new PageDivider(activity
+                                , new SpannableString(str.toString()), progressDialog).createAdapter();
+                    }
                 });
 
     }
