@@ -28,7 +28,7 @@ public class FileBrowserRVAdapter extends RecyclerView.Adapter<FileBrowserRVAdap
     static String DIVIDER = "\\.";
     static private final String PATH_SPLITTER = "/";
     static List<String> readableFormats = new ArrayList<>(
-            Arrays.asList("fb2", "djvu", "pdf", "epub", "txt"));
+            Arrays.asList("fb2", "djvu", "pdf", "epub", "txt","html"));
 
     //TODO read 7z?
     static List<String> archivedFormats = new ArrayList<>(

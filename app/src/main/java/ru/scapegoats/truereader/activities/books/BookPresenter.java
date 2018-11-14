@@ -2,6 +2,7 @@ package ru.scapegoats.truereader.activities.books;
 
 import ru.scapegoats.truereader.activities.books.booktypes.EPUB;
 import ru.scapegoats.truereader.activities.books.booktypes.FB2;
+import ru.scapegoats.truereader.activities.books.booktypes.HTML;
 import ru.scapegoats.truereader.activities.books.booktypes.TXT;
 import ru.scapegoats.truereader.model.Book;
 import ru.scapegoats.truereader.modules.Presenter;
@@ -38,9 +39,15 @@ public class BookPresenter implements Presenter<BookView> {
                 break;
             case TXT:
                 openTXT(book);
+            case HTML:
+                openHTML(book);
             default:
                 break;
         }
+    }
+
+    private void openHTML(Book book) {
+        new HTML(view.activity,book).createAdapter(progressDialog);
     }
 
     private void openTXT(Book book) {
